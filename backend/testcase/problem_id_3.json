@@ -1,0 +1,17 @@
+{ 
+  
+"method_name":"ReverseString",
+"problem_id":"3",
+"signature":["string","int"],
+"return_type":"string",
+
+"cases": [
+    {"input":["tharunkumar",2], "expected": "ramuknuraht"},
+    {"input":["hello",6], "expected": "olleh"},
+    {"input":["OpenAI",9], "expected": "IAnepO"},
+    {"input":["racecar",0], "expected": "racecar"},
+    {"input":["12345",1], "expected": "54321"}
+    ]
+
+}
+   

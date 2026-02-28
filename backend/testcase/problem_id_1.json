@@ -1,0 +1,14 @@
+    { 
+    
+    "method_name":"getmin",
+    "problem_id":"1",
+    "signature":["vector<int>","int"],
+    "return_type":"int",
+    "cases": [
+        {"input": [[1, -2],1], "expected": -2},
+        {"input": [[3, 0, 2],3], "expected": 0},
+        {"input": [[-1, -5, -3],3], "expected": -5},
+        {"input": [[10, 20, 5, 15],4], "expected": 5},
+        {"input": [[0],1], "expected": 0}
+        ]   
+    }

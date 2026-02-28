@@ -1,0 +1,61 @@
+
+services:
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+   
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DEBUG=True
+    command: sh -c "uv sync --frozen && uv run python manage.py runserver 0.0.0.0:8000"
+
+    volumes:
+      - ./backend:/app
+      - web_venv:/app/.venv
+      - ./pyproject.toml:/app/pyproject.toml
+      - ./uv.lock:/app/uv.lock
+    
+    depends_on:
+      - redis
+      - celery  
+
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: uv run celery -A backend worker --loglevel=info
+  
+    depends_on:
+      - redis
+
+
+  
+  redis:
+    build:
+      context: redis-dir
+      dockerfile: Dockerfile
+    ports:
+      - "6379:6379"
+    command: redis-server /app/redis.conf
+    
+  flower:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5555:5555"
+    command: uv run celery -A backend flower
+
+    depends_on: 
+      - redis
+      - celery
+
+volumes:
+  web_venv:
+    
+
