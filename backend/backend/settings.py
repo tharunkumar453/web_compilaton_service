@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-sc9ro!y6b0=3+2kys&v^ar++!79p0ov(r$_@#!l_q#^c1^bwms
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["web"]
 
 
 # Application definition
@@ -169,3 +169,5 @@ CACHES = {
         "LOCATION": "redis://redis:6379/2",
     }
 }
+FLOWER_URL = "http://flower:5555"
+FLOWER_URL_PREFIX = "flower"

@@ -1,2 +1,12 @@
-__pycache__
-migrations/
+.venv/
+.vscode/
+__pycache__/
+.dockerignore
+Dockerfile
+docker-compose.yml
+redis-dir/
+LICENSE
+README.md
+.git/
+.gitignore
+backend/backend/submissions/

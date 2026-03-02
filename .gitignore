@@ -2,3 +2,7 @@
 __pycache__
 .vscode
 migrations/
+nginx-selfsigned.crt
+nginx-selfsigned.key
+db.sqlite3
+ssl.key

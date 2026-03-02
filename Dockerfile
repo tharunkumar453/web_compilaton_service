@@ -1,24 +1,19 @@
-FROM python:3.12-slim
+FROM python:3.12-slim-trixie
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Install build dependencies
-
+# Install build dependenciese
 WORKDIR /app
 
-# Install uv
-RUN pip install uv
 
-# Copy project files
-COPY  pyproject.toml uv.lock  ./
-
+COPY  . ./
 # Sync dependencies with uv (this creates .venv in /app)
-RUN uv sync --frozen
+RUN uv sync --frozen 
 
 # Copy backend code (will be overridden by volume in dev)
-COPY  backend/ ./
+
 
 ENV DEBUG=1
-ENV PATH="/app/.venv/bin:$PATH"
 
 EXPOSE 8000
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
