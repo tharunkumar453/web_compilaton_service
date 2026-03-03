@@ -11,13 +11,16 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - DEBUG=True
+    working_dir: /app/backend
+      
     volumes:
       - ./backend:/app/backend
   
     depends_on:
       - redis
       - celery  
-    command: uv run python backend/manage.py runserver 0.0.0.0:8000
+      - postgres
+    command: uv run python manage.py runserver 0.0.0.0:8000
 
 
   celery:
@@ -78,3 +81,17 @@ services:
       - web
     restart: always
 
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: Tharunkumar
+      POSTGRES_PASSWORD: tharun123
+      POSTGRES_DB: web_compilation_service_db
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - datap:/var/lib/postgresql/data/
+    restart: always
+volumes:
+  datap:

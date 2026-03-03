@@ -24,8 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-sc9ro!y6b0=3+2kys&v^ar++!79p0ov(r$_@#!l_q#^c1^bwms"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = 1
 
+CSRF_TRUSTED_ORIGINS = ["https://localhost:443"]
 ALLOWED_HOSTS = ["web"]
 
 
@@ -47,7 +48,7 @@ INSTALLED_APPS = [
 ]
 
 AUTH_USER_MODEL = "Registration.CustomUserModel"
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -82,13 +83,20 @@ WSGI_APPLICATION = "backend.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+# Source - https://stackoverflow.com/q/77248636
+# Posted by tan_000
+# Retrieved 2026-03-03, License - CC BY-SA 4.0
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'web_compilation_service_db',
+        'USER': 'Tharunkumar',
+        'PASSWORD': 'tharun123',
+        'HOST': 'postgres',
+        'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -169,5 +177,3 @@ CACHES = {
         "LOCATION": "redis://redis:6379/2",
     }
 }
-FLOWER_URL = "http://flower:5555"
-FLOWER_URL_PREFIX = "flower"

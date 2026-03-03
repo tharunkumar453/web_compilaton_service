@@ -10,3 +10,5 @@ README.md
 .git/
 .gitignore
 backend/backend/submissions/
+datap
+postgres_data
