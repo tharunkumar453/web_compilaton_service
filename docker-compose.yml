@@ -20,8 +20,13 @@ services:
       - redis
       - celery  
       - postgres
-    command: uv run python manage.py runserver 0.0.0.0:8000
-
+    command: uv run gunicorn backend.wsgi:application --bind 0.0.0.0:8000 \
+            --workers 2 \
+            --threads 2 \
+            --timeout 100\
+             --keep-alive 5\
+             --worker-tmp-dir /dev/shm \
+             --reload
 
   celery:
     build:
@@ -72,7 +77,6 @@ services:
     build: ./nginx
     ports:
       - "80:80"
-      - "443:443"
     volumes:
       - ./nginx/djsite.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/nginx-selfsigned.crt:/etc/ssl/certs/nginx-selfsigned.crt
@@ -91,7 +95,7 @@ services:
       - "5432:5432"
 
     volumes:
-      - datap:/var/lib/postgresql/data/
+      - my_dj_data:/var/lib/postgresql/data/
     restart: always
 volumes:
-  datap:
+  my_dj_data:

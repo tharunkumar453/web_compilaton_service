@@ -13,8 +13,5 @@ urlpatterns=[
     path("check_status/<str:task_id>/", check_status.as_view(), name="check_status"),
  
    
-]+static( settings.MEDIA_URL,
-    document_root=settings.MEDIA_ROOT
-)
-
+]
 

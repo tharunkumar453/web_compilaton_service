@@ -24,10 +24,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-sc9ro!y6b0=3+2kys&v^ar++!79p0ov(r$_@#!l_q#^c1^bwms"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 1
+DEBUG = True
 
-CSRF_TRUSTED_ORIGINS = ["https://localhost:443"]
-ALLOWED_HOSTS = ["web"]
+ALLOWED_HOSTS = ["localhost",
+    "127.0.0.1",
+    "web",
+    "reimagined-fiesta-r4wrj64xxqj4hxvqg-443.app.github.dev"]
+CORS_ORIGIN_ALLOW_ALL = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost",
+    "http://127.0.0.1",
+"https://reimagined-fiesta-r4wrj64xxqj4hxvqg-443.app.github.dev"
+]
 
 
 # Application definition
@@ -45,19 +54,22 @@ INSTALLED_APPS = [
     "rest_framework",
     'corsheaders',
     "rest_framework_simplejwt",
+    "whitenoise.runserver_nostatic",
 ]
 
 AUTH_USER_MODEL = "Registration.CustomUserModel"
-CORS_ORIGIN_ALLOW_ALL = False
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "backend.urls"
@@ -139,9 +151,10 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
         'rest_framework.permissions.AllowAny',
-        'rest_framework.permissions.IsAdminUser',
+        "rest_framework.permissions.IsAuthenticated",
+
+      
         
     ],
     'DEFAULT_PARSER_CLASSES': [
@@ -177,3 +190,5 @@ CACHES = {
         "LOCATION": "redis://redis:6379/2",
     }
 }
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"

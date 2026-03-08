@@ -21,7 +21,7 @@ class UserBoard(models.Model):
 
 class submission(models.Model):
 	email=models.EmailField(blank=False)
-	submission_id=models.SlugField(max_length=20,unique=True,serialize=False)
+	submission_id=models.SlugField(max_length=37,unique=True,serialize=False)
 	problem=models.ForeignKey(problem_table, on_delete=models.CASCADE, blank=True, null=True,to_field=problem_table().problem_id ,related_name="submissions")
 	language_used=models.CharField(max_length=20,blank=False)
 	time_of_submission=models.TimeField(auto_now_add=True)

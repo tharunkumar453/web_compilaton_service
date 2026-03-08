@@ -1,9 +1,13 @@
 from rest_framework.views import APIView
+
 from rest_framework.response import Response
 from rest_framework import status
 from .models import CustomUserModel
 from rest_framework.permissions import AllowAny
 from rest_framework.parsers import JSONParser
+
+
+
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
@@ -20,13 +24,12 @@ class RegisterView(APIView):
         if CustomUserModel.objects.filter(email=email).exists():
             return Response({"detail": "Email already exists."}, status=status.HTTP_400_BAD_REQUEST)
 
-        user = CustomUserModel.objects.create_user(email=email, password=password, phone=phoneNumber)
+        user = CustomUserModel.objects.create_user(email=email, password=password, phone=phoneNumber) # type: ignore
         user.save()
 
         return Response({"detail": "User registered successfully."}, status=status.HTTP_201_CREATED)
 
 
-        
 class AdminRegister(APIView):
     permission_classes = [AllowAny]
     parser_classes = [JSONParser]
@@ -41,7 +44,7 @@ class AdminRegister(APIView):
         if CustomUserModel.objects.filter(email=email).exists():
             return Response({"detail": "Email already exists."}, status=status.HTTP_400_BAD_REQUEST)
 
-        user = CustomUserModel.objects.create_superuser(email=email, password=password, phone=phoneNumber)
+        user = CustomUserModel.objects.create_superuser(email=email, password=password, phone=phoneNumber) # type: ignore
         user.save()
 
         return Response({"detail": "Admin User registered successfully."}, status=status.HTTP_201_CREATED)

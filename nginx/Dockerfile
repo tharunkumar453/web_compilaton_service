@@ -1,5 +1,5 @@
 FROM nginx:latest
-EXPOSE 443
+EXPOSE 80
 ADD ./djsite.conf /etc/nginx/conf.d/djsite.conf
 ADD  ./nginx-selfsigned.crt /etc/ssl/certs/
 ADD  ./ssl.key /etc/ssl/private/
