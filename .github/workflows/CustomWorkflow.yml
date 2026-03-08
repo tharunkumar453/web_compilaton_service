@@ -13,8 +13,8 @@ jobs:
       - name : install docker and compose 
         run: 
           |
-          sudo apt-get update
-          sudo apt-get install -y docker.io docker-compose
+          apt-get update
+          apt-get install -y docker.io docker-compose
           # Verify installation 
           docker --version
           docker-compose --version
