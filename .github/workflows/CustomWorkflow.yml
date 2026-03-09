@@ -34,7 +34,7 @@ jobs:
     needs: job-build
     steps:
       - name : text to file
-        run : echo ${{ secrets.SERVER_SSH_KEY }} > private_key.pem
+        run : echo "${{ secrets.SERVER_SSH_KEY }}" > private_key.pem
 
       - name : set permissions for private key
         run : chmod 600 private_key.pem
