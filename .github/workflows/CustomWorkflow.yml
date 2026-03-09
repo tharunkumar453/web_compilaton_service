@@ -1,7 +1,8 @@
 name: ci-cd workflows
 
 on:
-  [workflow_dispatch]
+  push:
+    branches: [main]
 jobs:
   job-build:
     runs-on: ubuntu-latest
