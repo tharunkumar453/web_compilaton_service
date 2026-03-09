@@ -47,11 +47,11 @@ jobs:
         cd ~/TharunKumar
 
         # Pull latest image
-        docker pull ${{ secrets.DOCKER_USERNAME }}/web_compilaton_service-web:latest
+        sudo docker pull ${{ secrets.DOCKER_USERNAME }}/web_compilaton_service-web:latest
 
         # Remove old container if exists
-        docker rm -f web_compilaton_service-web || true
+        sudo docker rm -f web_compilaton_service-web || true
 
         # Run new container with correct port mapping
-        docker run -d -p 8000:8000 --restart always --name web_compilaton_service-web ${{ secrets.DOCKER_USERNAME }}/web_compilaton_service-web:latest
+        sudo docker run -d -p 8000:8000 --restart always --name web_compilaton_service-web ${{ secrets.DOCKER_USERNAME }}/web_compilaton_service-web:latest
         EOF
