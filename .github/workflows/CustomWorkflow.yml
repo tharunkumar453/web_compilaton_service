@@ -1,7 +1,8 @@
 name: ci-cd workflows
 
 on:
-  [workflow_dispatch]
+  push:
+    branches: [main]
 jobs:
   job-build:
     runs-on: ubuntu-latest
@@ -38,12 +39,13 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-      - name: pull and run the latest image on vm    
-        run : |
-            cd ~/Tharunkumar
-            docker pull tharunkumar453/web_compilaton_service-web:latest
-            docker run -d --name web -p 8000:8000 tharunkumar453/web_compilaton_service-web:latest
-
+          script: |
+            cd ~/TharunKumar
+            docker compose pull
+            docker compose down
+            docker compose up-d
+            
+             
 
          
 
