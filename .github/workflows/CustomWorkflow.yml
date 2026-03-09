@@ -12,10 +12,10 @@ jobs:
         run: 
           |
           sudo apt-get update
-          sudo apt-get install -y docker  docker-compose
+          sudo apt-get install -y docker.io  
           # Verify installation 
           docker --version
-          docker-compose --version
+
    
       - name : Login to DockerHub
         uses: docker/login-action@v2
