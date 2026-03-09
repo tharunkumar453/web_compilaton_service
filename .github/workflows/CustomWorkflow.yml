@@ -20,38 +20,33 @@ jobs:
       - name : Build images onky not run containers 
         run: docker compose build
 
-      - name : Push more images to DockerHub with custom tags
-        run : |
-          USER=${{ secrets.DOCKER_USERNAME }}
-          IMAGES=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep web_compilaton_service)
-          for IMAGE in $IMAGES; do
-            docker tag $IMAGE $USER/$IMAGE
-            docker push $USER/$IMAGE
-          done
+      - name : Push images to DockerHub
+        run: docker compose push
         
   job-deploy:
     runs-on: ubuntu-latest
     needs: job-build
 
     steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+
     - name: Create SSH key file
       run: |
         echo "${{ secrets.SERVER_SSH_KEY }}" > ssh_key.pem
         chmod 600 ssh_key.pem
-
+    - name : push yml file to server
+      run: scp -o StrictHostKeyChecking=no -i ssh_key.pem ./docker-compose.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:~/TharunKumar/
     - name: Deploy to remote server
       run: |
-        ssh -o StrictHostKeyChecking=no -i ssh_key.pem ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << EOF
+        ssh -o StrictHostKeyChecking=no -i ssh_key.pem ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
         # Make sure folder exists
         mkdir -p ~/TharunKumar
         cd ~/TharunKumar
 
         # Pull latest image
-        sudo docker pull ${{ secrets.DOCKER_USERNAME }}/web_compilaton_service-web:latest
-
-        # Remove old container if exists
-        sudo docker rm -f web_compilaton_service-web || true
-
-        # Run new container with correct port mapping
-        sudo docker run -d -p 8000:8000 --restart always --name web_compilaton_service-web ${{ secrets.DOCKER_USERNAME }}/web_compilaton_service-web:latest
+        sudo docker compose pull
+        # Stop and remove existing containers
+        sudo docker compose up -d --remove-orphans
         EOF
