@@ -43,7 +43,6 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no -i ssh_key.pem ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << EOF
         cd ~/TharunKumar
-        docker compose pull
-        docker compose up -d
-        EOF
+        docker pull ${{ secrets.DOCKER_USERNAME }}/web_compilaton_service-web:latest
+        docker run -d -p 8000:80000 --name web_compilaton_service-web ${{ secrets.DOCKER_USERNAME }}/web_compilaton_service-web:latest
         
