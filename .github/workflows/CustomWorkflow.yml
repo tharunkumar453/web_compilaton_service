@@ -44,5 +44,6 @@ jobs:
         ssh -o StrictHostKeyChecking=no -i ssh_key.pem ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << EOF
         cd ~/TharunKumar
         docker pull ${{ secrets.DOCKER_USERNAME }}/web_compilaton_service-web:latest
-        docker run -d -p 8000:80000 --name web_compilaton_service-web ${{ secrets.DOCKER_USERNAME }}/web_compilaton_service-web:latest
+        docker run -d -p 8000:8000--name web_compilaton_service-web ${{ secrets.DOCKER_USERNAME }}/web_compilaton_service-web:latest
+        EOF
         
