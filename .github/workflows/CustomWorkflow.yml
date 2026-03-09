@@ -22,9 +22,11 @@ jobs:
 
       - name : Push more images to DockerHub with custom tags
         run : |
-          IMAGES=$(docker images --format "{{.Repository}}:{{.Tag}}")
+          USER=${{ secrets.DOCKER_USERNAME }}
+          IMAGES=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep web_compilaton_service)
           for IMAGE in $IMAGES; do
-            docker push $IMAGE
+            docker tag $IMAGE $USER/$IMAGE
+            docker push $USER/$IMAGE
           done
       
           
