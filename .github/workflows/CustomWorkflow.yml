@@ -38,6 +38,8 @@ jobs:
         chmod 600 ssh_key.pem
     - name : push yml file to server
       run: scp -o StrictHostKeyChecking=no -i ssh_key.pem ./docker-compose.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:~/TharunKumar/
+    - name : push djconf file to server
+      run: scp -o StrictHostKeyChecking=no -i ssh_key.pem  ./nginx/djsite.conf ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:~/TharunKumar/
     - name: Deploy to remote server
       run: |
         ssh -o StrictHostKeyChecking=no -i ssh_key.pem ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
@@ -47,6 +49,7 @@ jobs:
 
         # Pull latest image
         sudo docker compose pull
-        # Stop and remove existing containers
-        sudo docker compose up -d --remove-orphans
-        EOF
+
+        # Restart containers
+        sudo docker compose up -d
+        EOF 
