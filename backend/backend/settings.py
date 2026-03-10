@@ -28,7 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["localhost",
     "django",
-    "127.0.0.1",
     "web",
     "20.212.14.87"]
 CORS_ORIGIN_ALLOW_ALL = True
@@ -167,8 +166,8 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
-    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=60),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=90),
+    'REFRESH_TOKEN_CYCLING': False,
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 

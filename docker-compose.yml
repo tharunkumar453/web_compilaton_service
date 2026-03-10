@@ -10,7 +10,6 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - PYTHONUNBUFFERED=1
       - DEBUG=True
     working_dir: /app/backend
     
@@ -46,7 +45,6 @@ services:
     working_dir: /app/backend
     command: uv run celery -A backend worker --loglevel=info
     environment:
-      - PYTHONUNBUFFERED=1
       - DJANGO_SETTINGS_MODULE=backend.settings
     depends_on:
       - redis
@@ -62,6 +60,7 @@ services:
     ports:
       - "6379:6379"
     command: redis-server /app/redis.conf
+    restart: always
     
   flower:
     build:
@@ -73,7 +72,6 @@ services:
     working_dir: /app/backend
     command: uv run celery -A backend flower
     environment:
-      - PYTHONUNBUFFERED=1
       - DJANGO_SETTINGS_MODULE=backend.settings
     depends_on: 
       - redis

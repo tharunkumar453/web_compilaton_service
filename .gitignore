@@ -5,3 +5,4 @@ nginx-selfsigned.crt
 nginx-selfsigned.key
 db.sqlite3
 ssl.key
+.env
