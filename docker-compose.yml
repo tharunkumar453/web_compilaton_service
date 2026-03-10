@@ -99,6 +99,8 @@ services:
       POSTGRES_DB: web_compilation_service_db
     ports:
       - "5432:5432"
+    volumes:
+      - my_dj_data:/var/lib/postgresql/data
 
     restart: always
     
