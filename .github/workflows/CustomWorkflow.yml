@@ -48,5 +48,5 @@ jobs:
         mkdir -p ~/TharunKumar
         cd ~/TharunKumar
         sudo docker compose pull
-        sudo docker compose up -d
+        sudo docker compose up -d --no-orphans
         EOF
