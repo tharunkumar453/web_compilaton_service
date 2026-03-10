@@ -28,7 +28,6 @@ jobs:
     needs: job-build
 
     steps:
-
     - name: Checkout code
       uses: actions/checkout@v4
 
@@ -36,20 +35,18 @@ jobs:
       run: |
         echo "${{ secrets.SERVER_SSH_KEY }}" > ssh_key.pem
         chmod 600 ssh_key.pem
-    - name : push yml file to server
+        
+    - name: push yml file to server
       run: scp -o StrictHostKeyChecking=no -i ssh_key.pem ./docker-compose.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:~/TharunKumar/
-    - name : push djconf file to server
-      run: scp -o StrictHostKeyChecking=no -i ssh_key.pem  ./nginx/djsite.conf ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:~/TharunKumar/
+      
+    - name: push djconf file to server
+      run: scp -o StrictHostKeyChecking=no -i ssh_key.pem ./nginx/djsite.conf ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:~/TharunKumar/
+      
     - name: Deploy to remote server
       run: |
         ssh -o StrictHostKeyChecking=no -i ssh_key.pem ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
-        # Make sure folder exists
         mkdir -p ~/TharunKumar
         cd ~/TharunKumar
-
-        # Pull latest image
         sudo docker compose pull
-
-        # Restart containers
         sudo docker compose up -d
-        EOF 
+        EOF
