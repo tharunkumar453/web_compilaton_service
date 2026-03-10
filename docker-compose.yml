@@ -49,6 +49,9 @@ services:
     command: uv run celery -A backend worker --loglevel=info
     environment:
       - DJANGO_SETTINGS_MODULE=backend.settings
+    volumes:
+      - test_cases:/app/backend/media/testcase
+      - submission_files:/app/backend/media/submissions
     depends_on:
       - redis
     restart: always
