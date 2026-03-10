@@ -89,7 +89,7 @@ services:
     depends_on:
       - web
     volumes:
-    - /etc/nginx/ssl-keys:/etc/nginx/ssl-keys
+    - /etc/nginx/ssl-keys:/etc/nginx/ssl-keys:ro
     restart: always
 
   postgres:
