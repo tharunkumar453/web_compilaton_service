@@ -57,7 +57,7 @@ services:
   redis:
     build:
       context: redis-dir
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile 
     image: tharunkumar453/redis
     ports:
       - "6379:6379"
