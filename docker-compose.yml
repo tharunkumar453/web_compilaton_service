@@ -12,6 +12,9 @@ services:
     environment:
       - DEBUG=True
     working_dir: /app/backend
+    volumes:
+      - test_cases:/app/backend/media/testcase
+      - submission_files:/app/backend/media/submissions
     
   
     depends_on:
@@ -106,3 +109,5 @@ services:
     
 volumes:
   my_dj_data:
+  test_cases:
+  submission_files:
