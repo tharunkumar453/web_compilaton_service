@@ -10,5 +10,4 @@ urlpatterns = [
     path("admin_permissions/", admin.site.urls),
     path("Processing/", include(compile_urls)),
     path("Register/", include(register_urls)),
-    path("accounts/", include("django.contrib.auth.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
