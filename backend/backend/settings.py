@@ -29,13 +29,12 @@ DEBUG = True
 ALLOWED_HOSTS = ["localhost",
     "127.0.0.1",
     "web",
-    "reimagined-fiesta-r4wrj64xxqj4hxvqg-443.app.github.dev"]
+    "20.212.14.87"]
 CORS_ORIGIN_ALLOW_ALL = True
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost",
-    "http://127.0.0.1",
-"https://reimagined-fiesta-r4wrj64xxqj4hxvqg-443.app.github.dev"
+    "http://20.212.14.87",
+    "https://20.212.14.87",
 ]
 
 
