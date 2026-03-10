@@ -88,6 +88,8 @@ services:
       - "443:443"
     depends_on:
       - web
+    volumes:
+    - /etc/nginx/ssl-keys:/etc/nginx/ssl-keys
     restart: always
 
   postgres:
