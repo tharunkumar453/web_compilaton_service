@@ -94,6 +94,7 @@ services:
 
   postgres:
     image: postgres:16-alpine
+    container_name : tharunkumar453/postgres
 
     environment:
       POSTGRES_USER: Tharunkumar
