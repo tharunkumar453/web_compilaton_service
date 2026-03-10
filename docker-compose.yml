@@ -19,13 +19,24 @@ services:
       - redis
       - celery  
       - postgres
-    command: uv run gunicorn backend.wsgi:application --bind 0.0.0.0:8000 \
-            --workers 2 \
-            --threads 2 \
-            --timeout 100\
-             --keep-alive 5\
-             --worker-tmp-dir /dev/shm \
-             --reload
+    command:
+      - uv
+      - run
+      - gunicorn
+      - backend.wsgi:application
+      - --bind
+      - 0.0.0.0:8000
+      - --workers
+      - "2"
+      - --threads
+      - "2"
+      - --timeout
+      - "100"
+      - --keep-alive
+      - "5"
+      - --worker-tmp-dir
+      - /dev/shm
+    restart: always
 
   celery:
     build:
@@ -39,6 +50,7 @@ services:
       - DJANGO_SETTINGS_MODULE=backend.settings
     depends_on:
       - redis
+    restart: always
 
 
   
@@ -66,7 +78,7 @@ services:
     depends_on: 
       - redis
       - celery
-  
+
 
   nginx:
     build: ./nginx
@@ -74,6 +86,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    depends_on:
+      - web
     restart: always
 
   postgres:
