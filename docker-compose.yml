@@ -76,7 +76,15 @@ services:
     ports:
       - "5555:5555"
     working_dir: /app/backend
-    command: uv run celery -A backend flower
+    command:
+    - uv
+    - run
+    - celery
+    - -A
+    - backend
+    - flower
+    - --port=5555
+    
     environment:
       - DJANGO_SETTINGS_MODULE=backend.settings
     depends_on: 
