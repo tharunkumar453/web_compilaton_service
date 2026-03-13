@@ -4,18 +4,19 @@ import json
 # total code combiner to combine user code with driver code
 class TotalCodeCombiner:
     @staticmethod
-    def comineUsercodewithDriverCode(user_code,Driver_code):
+    def combineUsercodewithDriverCode(user_code,Driver_code):
         x=f'''
 {user_code}  
 {Driver_code}
 '''     
         print(x)
         return x
-# Abstract DriverCode class       
+
 class DriverCode(ABC): 
     @abstractmethod
     def DriverCodeGenerator(self,file,test_casess) -> str:
         pass
+
 
  # Driver code for python   
 class PythonDriverCode(DriverCode):
@@ -44,10 +45,12 @@ def driver_code():
     print("Accepted")
 driver_code()
 '''   
-        return TotalCodeCombiner.comineUsercodewithDriverCode(file,driver_code)
+        return TotalCodeCombiner.combineUsercodewithDriverCode(file,driver_code)
         
 # Driver code for C++
 class CppDriverCode(DriverCode):
+
+
     def DriverCodeGenerator(self,file,test_casess):
         dump_json=json.dumps(test_casess,indent=2)
         argument_declarations = []
@@ -86,4 +89,45 @@ int main() {{
     return 0;
 }}
 ''' 
-        return TotalCodeCombiner.comineUsercodewithDriverCode(file,driver_code)
+        return TotalCodeCombiner.combineUsercodewithDriverCode(file,driver_code)
+    
+
+# Driver code for C
+class CDriverCode(DriverCode): 
+    def DriverCodeGenerator(self, file, test_casess):
+
+        inputs = [tc["input"] for tc in test_casess["cases"]]
+        ans = [tc["expected"] for tc in test_casess["cases"]]
+        method = test_casess["method_name"]
+
+        driver_code = f'''
+#include <stdio.h>
+
+int main() {{
+
+    int result;
+
+'''
+
+        for i, (inp, out) in enumerate(zip(inputs, ans)):
+
+            if isinstance(inp, list):
+                args = ",".join(map(str, inp))
+            else:
+                args = str(inp)
+
+            driver_code += f'''
+    result = {method}({args});
+
+    if(result != {out}) {{
+        printf("Error at test case %d\\n", {i+1});
+        return 0;
+    }}
+'''
+
+        driver_code += '''
+    printf("Accepted\\n");
+    return 0;
+}
+'''
+        return TotalCodeCombiner.combineUsercodewithDriverCode(file, driver_code)
