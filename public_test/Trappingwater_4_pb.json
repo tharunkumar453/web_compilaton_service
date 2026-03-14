@@ -1,0 +1,11 @@
+{
+    "method_name": "TrappingWater",
+    "problem_id": "4",
+    "signature": ["vector<int>"],
+    "return_type": "int",
+    "cases": [
+        {"input": [[4, 2, 0, 3, 2, 5]], "expected": 9},
+        {"input": [[0, 1, 0]], "expected": 0},
+        {"input": [[2, 0, 2]], "expected": 2}
+    ]
+}

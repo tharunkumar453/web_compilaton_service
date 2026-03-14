@@ -6,3 +6,4 @@ nginx-selfsigned.key
 db.sqlite3
 ssl.key
 .env
+.json
