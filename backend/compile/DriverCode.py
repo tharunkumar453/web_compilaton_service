@@ -96,34 +96,96 @@ int main() {{
 class CDriverCode(DriverCode):
 
     def DriverCodeGenerator(self, file, test_casess):
+
         inputs = [tc["input"] for tc in test_casess['cases']]
         ans = [tc["output"] for tc in test_casess['cases']]
         method = test_casess["method_name"]
-        if test_casess["return_type"] == "string":test_casess["return_type"] = "char*"
-        if test_casess["return_type"] == "vector<int>":test_casess["return_type"] = "int*"
-        def arg_formatter(arg):
-            if isinstance(arg, str):
-                return f'"{arg}"'
-            elif isinstance(arg, list):
-                return "{" + ", ".join(map(str, arg)) + "}"
-            else:
-                return str(arg)
-        driver_code = f'''
-int main() {{
+        return_type = test_casess["return_type"]
+        compare_code = ""
+
+        if return_type == "string":
+            c_return = "char*"
+            compare_code = "strcmp(output, expected) != 0"
+
+        elif return_type == "vector<int>":
+            c_return = "int*"
+
+        else:
+            c_return = return_type
+            compare_code = "output != expected"
+
+        driver_code = '''
+#include<stdio.h>
+#include<string.h>
+
+int main() {
 '''
-        for i, (x, y) in enumerate(zip(inputs, ans)):
-            formatted_args = ", ".join(arg_formatter(arg) for arg in x)
-            formatted_expected = arg_formatter(y)
-            driver_code += f'''
-    {test_casess["return_type"]} output = {method}({formatted_args});
-    if (output != {formatted_expected}) {{
-        printf("Error at test case {i + 1}\\n");
+
+        for i,(x,y) in enumerate(zip(inputs,ans)):
+
+            args=[]
+            setup_code=""
+
+            for j,arg in enumerate(x):
+
+                if isinstance(arg,list):
+
+                    arr_name=f"arr_{i}_{j}"
+                    arr_vals=", ".join(map(str,arg))
+
+                    setup_code+=f'''
+    int {arr_name}[] = {{{arr_vals}}};
+'''
+                    args.append(arr_name)
+
+                elif isinstance(arg,str):
+
+                    args.append(f'"{arg}"')
+
+                else:
+                    args.append(str(arg))
+
+            formatted_args=", ".join(args)
+
+            if return_type=="vector<int>":
+
+                expected_vals=", ".join(map(str,y))
+                size=len(y)
+
+                driver_code+=f'''
+                {setup_code}
+
+    int* output = {method}({formatted_args});
+
+    int expected[] = {{{expected_vals}}};
+    int expected_size = {size};
+
+    if(memcmp(output, expected, sizeof(int)*expected_size)!=0){{
+        printf("Error at test case {i+1}\\n");
         return 1;
-    }} 
+    }}
 '''
+
+            else:
+
+                expected = f'"{y}"' if isinstance(y,str) else y
+
+                driver_code+=f'''
+                {setup_code}
+
+                {c_return} output = {method}({formatted_args});
+                {c_return} expected = {expected};
+
+                if({compare_code}){{
+                printf("Error at test case {i+1}\\n");
+                    return 1;
+                }}
+'''
+
         driver_code += '''
     printf("Accepted\\n");
     return 0;
 }
 '''
-        return TotalCodeCombiner.combineUsercodewithDriverCode(file, driver_code) 
+
+        return TotalCodeCombiner.combineUsercodewithDriverCode(file, driver_code)
