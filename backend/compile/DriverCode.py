@@ -96,66 +96,98 @@ int main() {{
 class CDriverCode(DriverCode):
 
     def DriverCodeGenerator(self, file, test_casess):
-
-        inputs = [tc["input"] for tc in test_casess["cases"]]
-        outputs = [tc["output"] for tc in test_casess["cases"]]
-
+        cases = test_casess.get("cases", [])
         method = test_casess["method_name"]
-        return_type = test_casess["return_type"]
+        signature = test_casess.get("signature", [])
 
-        if return_type == "string": return_type = "char*"
-        elif return_type == "vector<int>":return_type = "int*"
+        def normalize_c_type(tp):
+            if tp == "string":
+                return "char*"
+            if tp == "vector<int>":
+                return "int*"
+            return tp
 
+        return_type = normalize_c_type(test_casess["return_type"])
 
-        def format_arg(x):
-            if isinstance(x, str):
-                return f'"{x}"'
-            return str(x)
+        def c_string_literal(value: str) -> str:
+            return json.dumps(value)
 
-        def format_expected(x):
-            if isinstance(x, str):
-                return f'"{x}"'
-            return str(x)
+        def format_scalar(value):
+            if isinstance(value, bool):
+                return "1" if value else "0"
+            if isinstance(value, str):
+                return c_string_literal(value)
+            if value is None:
+                return "0"
+            return str(value)
 
         driver_code = f'''
+#include <stdio.h>
+#include <string.h>
+
 int main() {{
 
     {return_type} result;
 
 '''
 
-        for i, (inp, out) in enumerate(zip(inputs, outputs)):
+        for i, tc in enumerate(cases):
+            inp = tc.get("input", [])
+            out = tc.get("output", tc.get("expected", tc.get("outputs")))
 
-            if isinstance(inp, list):
-                args = ",".join(map(format_arg, inp))
-            else:
-                args = format_arg(inp)
+            if not isinstance(inp, list):
+                inp = [inp]
 
-            expected = format_expected(out)
+            arg_values = []
 
-            driver_code += f'''
-    result = {method}({args});
-'''
- 
+            # Build call args based on signature first.
+            for j, sig in enumerate(signature):
+                value = inp[j] if j < len(inp) else None
+
+                if sig == "vector<int>":
+                    arr_name = f"arg_{i}_{j}"
+                    arr_data = value if isinstance(value, list) else []
+                    arr_init = ",".join(map(str, arr_data)) if arr_data else "0"
+                    driver_code += f"    int {arr_name}[] = {{{arr_init}}};\n"
+                    arg_values.append(arr_name)
+                    arg_values.append(str(len(arr_data)))
+                elif sig == "string":
+                    s_name = f"arg_{i}_{j}"
+                    s_value = value if isinstance(value, str) else ""
+                    driver_code += f"    char {s_name}[] = {c_string_literal(s_value)};\n"
+                    arg_values.append(s_name)
+                else:
+                    arg_values.append(format_scalar(value))
+
+            # If test data has extra args beyond signature, pass them as scalars.
+            for extra_idx in range(len(signature), len(inp)):
+                arg_values.append(format_scalar(inp[extra_idx]))
+
+            args = ", ".join(arg_values)
+            driver_code += f"    result = {method}({args});\n"
+
             if return_type == "char*":
+                expected = c_string_literal(out if isinstance(out, str) else "")
                 driver_code += f'''
     if (strcmp(result, {expected}) != 0) {{
         printf("Error at test case {i+1}\\n");
         return 1;
     }}
 '''
-            elif return_type == "int":
+            elif return_type in ("int", "long long"):
                 driver_code += f'''
-    if (result != {expected}) {{
+    if (result != {format_scalar(out)}) {{
         printf("Error at test case {i+1}\\n");
         return 1;
-    }}  
-
+    }}
 '''
             elif return_type == "int*":
+                expected_arr = out if isinstance(out, list) else []
+                expected_init = ",".join(map(str, expected_arr)) if expected_arr else "0"
+                expected_len = len(expected_arr)
                 driver_code += f'''
-    int expected_{i}[] = {{{",".join(map(str,out))}}};
-    if (memcmp(result, expected_{i}, sizeof(expected_{i})) != 0) {{
+    int expected_{i}[] = {{{expected_init}}};
+    if (memcmp(result, expected_{i}, sizeof(int) * {expected_len}) != 0) {{
         printf("Error at test case {i+1}\\n");
         return 1;
     }}
