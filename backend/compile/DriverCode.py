@@ -99,6 +99,8 @@ class CDriverCode(DriverCode):
         inputs = [tc["input"] for tc in test_casess["cases"]]
         ans = [tc["output"] for tc in test_casess["cases"]]
         method = test_casess["method_name"]
+        test_casess["return_type"]
+        if test_casess["return_type"] == "string":test_casess["return_type"] = "char*"
 
         driver_code = f'''
 #include <stdio.h>
