@@ -93,37 +93,64 @@ int main() {{
     
 
 # Driver code for C
-class CDriverCode(DriverCode): 
+class CDriverCode(DriverCode):
+
     def DriverCodeGenerator(self, file, test_casess):
 
         inputs = [tc["input"] for tc in test_casess["cases"]]
-        ans = [tc["output"] for tc in test_casess["cases"]]
+        outputs = [tc["output"] for tc in test_casess["cases"]]
+
         method = test_casess["method_name"]
-        test_casess["return_type"]
-        if test_casess["return_type"] == "string":test_casess["return_type"] = "char*"
+        return_type = test_casess["return_type"]
+
+        if return_type == "string":return_type = "char*"
+
+
+        def format_arg(x):
+            if isinstance(x, str):
+                return f'"{x}"'
+            return str(x)
+
+        def format_expected(x):
+            if isinstance(x, str):
+                return f'"{x}"'
+            return str(x)
 
         driver_code = f'''
 #include <stdio.h>
+#include <string.h>
 
 int main() {{
 
-    {test_casess["return_type"]} result;
+    {return_type} result;
 
 '''
 
-        for i, (inp, out) in enumerate(zip(inputs, ans)):
+        for i, (inp, out) in enumerate(zip(inputs, outputs)):
 
             if isinstance(inp, list):
-                args = ",".join(map(str, inp))
+                args = ",".join(map(format_arg, inp))
             else:
-                args = str(inp)
+                args = format_arg(inp)
+
+            expected = format_expected(out)
 
             driver_code += f'''
     result = {method}({args});
+'''
 
-    if(result != {out}) {{
-        printf("Error at test case %d\\n", {i+1});
-        return 0;
+            if return_type == "char*":
+                driver_code += f'''
+    if (strcmp(result, {expected}) != 0) {{
+        printf("Error at test case {i+1}\\n");
+        return 1;
+    }}
+'''
+            else:
+                driver_code += f'''
+    if (result != {expected}) {{
+        printf("Error at test case {i+1}\\n");
+        return 1;
     }}
 '''
 
@@ -132,4 +159,5 @@ int main() {{
     return 0;
 }
 '''
+
         return TotalCodeCombiner.combineUsercodewithDriverCode(file, driver_code)
