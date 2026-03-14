@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 import json
-n
 
 # total code combiner to combine user code with driver code
 class TotalCodeCombiner:
