@@ -22,7 +22,7 @@ class DriverCode(ABC):
 class PythonDriverCode(DriverCode):
     def DriverCodeGenerator(self,file,test_casess):
         inputs=[tc["input"] for tc in test_casess['cases']]
-        ans=[tc["expected"] for tc in test_casess['cases']]
+        ans=[tc["output"] for tc in test_casess['cases']]
         method=test_casess["method_name"]
         driver_code=f'''
 def parse(x):
@@ -74,7 +74,7 @@ void driver_code() {{
          
         {argument_declarations_code}// code inject in to the cpp wafer
         
-        auto expected = cases[i]["expected"].get<{test_casess["return_type"]}>();
+        auto expected = cases[i]["output"].get<{test_casess["return_type"]}>();
         auto output = a.{test_casess["method_name"]}({arg_call});// call with multiple argments
         if (output != expected) {{
             cout << "Error at test case " << i + 1 << endl;
@@ -97,7 +97,7 @@ class CDriverCode(DriverCode):
     def DriverCodeGenerator(self, file, test_casess):
 
         inputs = [tc["input"] for tc in test_casess["cases"]]
-        ans = [tc["expected"] for tc in test_casess["cases"]]
+        ans = [tc["output"] for tc in test_casess["cases"]]
         method = test_casess["method_name"]
 
         driver_code = f'''
