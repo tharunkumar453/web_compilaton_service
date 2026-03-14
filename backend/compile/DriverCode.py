@@ -105,7 +105,7 @@ class CDriverCode(DriverCode):
 
 int main() {{
 
-    int result;
+    {test_casess["return_type"]} result;
 
 '''
 
