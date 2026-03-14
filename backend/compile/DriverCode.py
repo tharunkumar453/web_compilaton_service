@@ -38,7 +38,7 @@ def driver_code():
         args=parse(x)
         out=func(*args)
         exp=parse(y)
-       
+        print("Output:",out,"Expected:",exp)
         if(out!=exp):
             print("error at test case",i+1)
             return
@@ -76,6 +76,7 @@ void driver_code() {{
         
         auto expected = cases[i]["output"].get<{test_casess["return_type"]}>();
         auto output = a.{test_casess["method_name"]}({arg_call});// call with multiple argments
+        cout << "Output: " << output << ", Expected: " << expected << endl;
         if (output != expected) {{
             cout << "Error at test case " << i + 1 << endl;
             return;
@@ -160,9 +161,18 @@ int main() {
 
     int expected[] = {{{expected_vals}}};
     int expected_size = {size};
-
+ 
     if(memcmp(output, expected, sizeof(int)*expected_size)!=0){{
         printf("Error at test case {i+1}\\n");
+        printf("Output: ");
+        for(int k=0;k<expected_size;k++){{
+            printf("%d ", output[k]);
+        }}
+        printf("\\nExpected: ");
+        for(int k=0;k<expected_size;k++){{
+            printf("%d ", expected[k]);
+        }}
+        printf("\\n");
         return 1;
     }}
 }}
@@ -182,8 +192,20 @@ int main() {
 
                 if({compare_code}){{
                 printf("Error at test case {i+1}\\n");
-                    return 1;
+                printf("Output: ");
+                if(strcmp("{return_type}","string")==0){{
+                    printf("%s", output);
+                }}else{{
+                    printf("%d", output);
                 }}
+                printf("\\nExpected: ");
+                if(strcmp("{return_type}","string")==0){{
+                    printf("%s", expected);
+                }}else{{
+                    printf("%d", expected);
+                }}  
+                printf("\\n");
+                return 1;
 }}
 '''
 
