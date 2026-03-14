@@ -14,17 +14,16 @@ class TotalCodeCombiner:
 
 class DriverCode(ABC): 
     @abstractmethod
-    def DriverCodeGenerator(self,file,test_casess) -> str:
+    def DriverCodeGenerator(self,file,test_casess,json_file_path=None) -> str:
         pass
 
 
  # Driver code for python   
 class PythonDriverCode(DriverCode):
-    def DriverCodeGenerator(self,file,test_casess):
-        inputs=[tc["input"] for tc in test_casess['cases']]
-        ans=[tc["expected"] for tc in test_casess['cases']]
+    def DriverCodeGenerator(self,file,test_casess,json_file_path=None):
         method=test_casess["method_name"]
         driver_code=f'''
+import json as _json
 def parse(x):
     if isinstance(x,list):
         return[parse(v) for v in x]
@@ -32,15 +31,16 @@ def parse(x):
         return {{ k: parse(v) for k,v in x.items()}}
     return x
 def driver_code():
+    with open({json.dumps(json_file_path)}, 'r') as _f:
+        _data = _json.load(_f)
     a=Solution()
     func=getattr(a,'{method}')
-    for  i,(x,y) in enumerate(zip{inputs,ans}):
-        args=parse(x)
+    for i, tc in enumerate(_data["cases"]):
+        args=parse(tc["input"])
         out=func(*args)
-        exp=parse(y)
-       
+        exp=parse(tc["expected"])
         if(out!=exp):
-            print("error at test case",i+1)
+            print("Error at test case",i+1)
             return
     print("Accepted")
 driver_code()
@@ -51,8 +51,7 @@ driver_code()
 class CppDriverCode(DriverCode):
 
 
-    def DriverCodeGenerator(self,file,test_casess):
-        dump_json=json.dumps(test_casess,indent=2)
+    def DriverCodeGenerator(self,file,test_casess,json_file_path=None):
         argument_declarations = []
         argument_names = []
         for i, type in enumerate(test_casess["signature"]):
@@ -64,13 +63,15 @@ class CppDriverCode(DriverCode):
         driver_code=f'''
 
 #include "/app/backend/jsonhpp/json.hpp"
+#include <fstream>
 using json = nlohmann::json;
 using namespace std;
 void driver_code() {{
     Solution a;
-    json data = R"({dump_json})"_json;
+    ifstream f({json.dumps(json_file_path)});
+    json data = json::parse(f);
     auto cases = data["cases"];
-    for (int i = 0; i < cases.size(); i++) {{
+    for (int i = 0; i < (int)cases.size(); i++) {{
          
         {argument_declarations_code}// code inject in to the cpp wafer
         
@@ -94,7 +95,7 @@ int main() {{
 
 # Driver code for C
 class CDriverCode(DriverCode): 
-    def DriverCodeGenerator(self, file, test_casess):
+    def DriverCodeGenerator(self, file, test_casess, json_file_path=None):
 
         inputs = [tc["input"] for tc in test_casess["cases"]]
         ans = [tc["expected"] for tc in test_casess["cases"]]
