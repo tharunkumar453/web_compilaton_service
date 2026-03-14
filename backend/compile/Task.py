@@ -5,6 +5,7 @@ from .MiiddleWare import DriverCodeMiddleware,ExecuteCodeFactory
 from .models import UserBoard
 from .workers import WriteInFile,codefilehandler
 from .models import submission,problem_table,UserBoard
+from .ExecuteCode import _TESTCASES_FILENAME
 from django.core.cache import cache
 class ExecutionHandler:
     def handle_execution(self,email,problem_id,language,user_codefile_id,name):
@@ -16,10 +17,10 @@ class ExecutionHandler:
     
 
         driver_code_instance=DriverCodeMiddleware.DrivercodeLanguage(language)
-        Combined_code=driver_code_instance.DriverCodeGenerator(code_content,testcases)
+        Combined_code=driver_code_instance.DriverCodeGenerator(code_content,testcases,_TESTCASES_FILENAME)
         print("Combined code is ",Combined_code)
         ExecutioncodeInstance=ExecuteCodeFactory.CodeExecution(language)
-        code_output=ExecutioncodeInstance.Execute(Combined_code,name)
+        code_output=ExecutioncodeInstance.Execute(Combined_code,name,testcases)
 
         has_done=True if code_output["output"]=="Accepted" else False
         if has_done:
