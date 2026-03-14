@@ -103,7 +103,8 @@ class CDriverCode(DriverCode):
         method = test_casess["method_name"]
         return_type = test_casess["return_type"]
 
-        if return_type == "string":return_type = "char*"
+        if return_type == "string": return_type = "char*"
+        elif return_type == "vector<int>":return_type = "int*"
 
 
         def format_arg(x):
@@ -117,9 +118,6 @@ class CDriverCode(DriverCode):
             return str(x)
 
         driver_code = f'''
-#include <stdio.h>
-#include <string.h>
-
 int main() {{
 
     {return_type} result;
@@ -146,9 +144,18 @@ int main() {{
         return 1;
     }}
 '''
-            else:
+            elif return_type == "int":
                 driver_code += f'''
     if (result != {expected}) {{
+        printf("Error at test case {i+1}\\n");
+        return 1;
+    }}  
+
+'''
+            elif return_type == "int*":
+                driver_code += f'''
+    int expected_{i}[] = {{{",".join(map(str,out))}}};
+    if (memcmp(result, expected_{i}, sizeof(expected_{i})) != 0) {{
         printf("Error at test case {i+1}\\n");
         return 1;
     }}
