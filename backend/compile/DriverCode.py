@@ -65,7 +65,7 @@ class CppDriverCode(DriverCode):
 
 #include "/app/backend/jsonhpp/json.hpp"
 using json = nlohmann::json;
-using namespace std;ss
+using namespace std;
 void driver_code() {{
     Solution a;
     json data = R"({dump_json})"_json;
