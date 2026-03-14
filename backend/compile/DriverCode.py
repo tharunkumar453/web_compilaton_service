@@ -153,6 +153,7 @@ int main() {
                 size=len(y)
 
                 driver_code+=f'''
+{{
                 {setup_code}
 
     int* output = {method}({formatted_args});
@@ -164,6 +165,7 @@ int main() {
         printf("Error at test case {i+1}\\n");
         return 1;
     }}
+}}
 '''
 
             else:
@@ -171,6 +173,8 @@ int main() {
                 expected = f'"{y}"' if isinstance(y,str) else y
 
                 driver_code+=f'''
+
+{{
                 {setup_code}
 
                 {c_return} output = {method}({formatted_args});
@@ -180,6 +184,7 @@ int main() {
                 printf("Error at test case {i+1}\\n");
                     return 1;
                 }}
+}}
 '''
 
         driver_code += '''
