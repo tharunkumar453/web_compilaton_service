@@ -98,7 +98,7 @@ class CppDriverCode(DriverCode):
         argument_declarations_code = "\n        ".join(argument_declarations)
         arg_call = ", ".join(argument_names)
 
-        driver_code = f'''
+        driver_code = '''
 
 #include "/app/backend/jsonhpp/json.hpp"
 #include <iostream>
@@ -117,8 +117,8 @@ void printvalue(const vector<T>& v){
     }
     cout<<"]";
 }
-
-
+'''
+        driver_code+=f'''
 void driver_code() {{
     Solution a;
     json data = R"({dump_json})"_json;
