@@ -58,29 +58,27 @@ driver_code()
         
 # Driver code for C++
 class CppDriverCode(DriverCode):
-
-
     def DriverCodeGenerator(self,file,test_casess,is_private):
         dump_json=json.dumps(test_casess,indent=2)
         argument_declarations = []
         argument_names = []
         if is_private:
             verify_code='''
-            if (output != expected) {{
+            if (output != expected) {
             cout << "Error at test case " << i + 1 << endl;
             return;
-            }}
-        }}
+            }
+        }
         cout << "Accepted" << endl;
 '''
         else:
             verify_code='''
             cout << "Test case " << i + 1 << ": Output: " << output << ", Expected: " << expected << endl;
-            if (output != expected) {{
+            if (output != expected) {
             cout << "Error at test case " << i + 1 << endl;
             return;
-            }}
-        }}
+            }
+        }
 '''
 
         for i, type in enumerate(test_casess["signature"]):
