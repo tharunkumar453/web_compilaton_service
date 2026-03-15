@@ -80,7 +80,7 @@ class CppDriverCode(DriverCode):
         
         cout<<"Test case:"<<i+1<<":output:";
         printvalue(output);
-        cout<<",expected:"<<;
+        cout<<",expected:";
         printvalue(expected);
         cout<<endl;
         if (output != expected) {
