@@ -58,64 +58,78 @@ driver_code()
         
 # Driver code for C++
 class CppDriverCode(DriverCode):
-    def DriverCodeGenerator(self,file,test_casess,is_private):
-        dump_json=json.dumps(test_casess,indent=2)
+
+    def DriverCodeGenerator(self, file, test_casess, is_private):
+
+        dump_json = json.dumps(test_casess, indent=2)
+
         argument_declarations = []
         argument_names = []
+
+        cases_key = "private_cases" if is_private else "public_cases"
+
         if is_private:
-            verify_code='''
-            if (output != expected) {
+            verify_code = '''
+        if (output != expected) {
             cout << "Error at test case " << i + 1 << endl;
             return;
-            }
         }
-        cout << "Accepted" << endl;
 '''
         else:
-            verify_code='''
-            cout << "Test case " << i + 1 << ": Output: " << output << ", Expected: " << expected << endl;
-            if (output != expected) {
+            verify_code = '''
+        cout << "Test case " << i + 1 << ": Output: " << output << ", Expected: " << expected << endl;
+        if (output != expected) {
             cout << "Error at test case " << i + 1 << endl;
             return;
-            }
         }
-        
 '''
 
         for i, type in enumerate(test_casess["signature"]):
-            argument_declarations.append(f'{type} arg_{i} = cases[i]["input"][{i}].get<{type}>();')    
+            argument_declarations.append(
+                f'{type} arg_{i} = cases[i]["input"][{i}].get<{type}>();'
+            )
             argument_names.append(f'arg_{i}')
 
-        argument_declarations_code = "\n".join(argument_declarations)
+        argument_declarations_code = "\n        ".join(argument_declarations)
         arg_call = ", ".join(argument_names)
-        driver_code=f'''
+
+        driver_code = f'''
 
 #include "/app/backend/jsonhpp/json.hpp"
 using json = nlohmann::json;
 using namespace std;
+
 void driver_code() {{
     Solution a;
     json data = R"({dump_json})"_json;
-    auto cases = data["cases"];
-    for (int i = 0; i < cases.size(); i++) {{
-         
-        {argument_declarations_code}// code inject in to the cpp wafer
-        
-        auto expected = cases[i]["output"].get<{test_casess["return_type"]}>();
-        auto output = a.{test_casess["method_name"]}({arg_call});// call with multiple argments
-        {verify_code}
-        
-    }}
+    auto cases = data["{cases_key}"];
 
-int main() {{
+    for (int i = 0; i < cases.size(); i++) {{
+
+        {argument_declarations_code}
+
+        auto expected = cases[i]["output"].get<{test_casess["return_type"]}>();
+        auto output = a.{test_casess["method_name"]}({arg_call});
+
+        {verify_code}
+    }}
+'''
+
+        if is_private:
+            driver_code += '''
+    cout << "Accepted" << endl;
+'''
+
+        driver_code += '''
+}
+
+int main() {
     driver_code();
     return 0;
-}}
-''' 
-        return TotalCodeCombiner.combineUsercodewithDriverCode(file,driver_code)
-    
+}
+'''
 
-# Driver code for C
+        return TotalCodeCombiner.combineUsercodewithDriverCode(file, driver_code)
 class CDriverCode(DriverCode):
 
     def DriverCodeGenerator(self, file, test_casess,is_private):
