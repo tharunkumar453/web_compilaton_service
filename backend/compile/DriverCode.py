@@ -133,9 +133,9 @@ int main() {
 class CDriverCode(DriverCode):
 
     def DriverCodeGenerator(self, file, test_casess,is_private):
-
-        inputs = [tc["input"] for tc in test_casess['cases']]
-        ans = [tc["output"] for tc in test_casess['cases']]
+        
+        inputs = [tc["input"] for tc in test_casess[ "private_cases" if is_private else "public_cases"]]
+        ans = [tc["output"] for tc in test_casess[ "private_cases" if is_private else "public_cases"]]
         method = test_casess["method_name"]
         return_type = test_casess["return_type"]
 
