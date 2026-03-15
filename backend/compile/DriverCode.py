@@ -125,7 +125,6 @@ class CDriverCode(DriverCode):
         ans = [tc["output"] for tc in test_casess['cases']]
         method = test_casess["method_name"]
         return_type = test_casess["return_type"]
-            compare_code = "output != expected"
 
         if return_type == "string":
             c_return = "char*"
