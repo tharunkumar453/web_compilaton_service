@@ -27,7 +27,6 @@ class ExecutionHandler:
             problem_id=problem_id,
             has_done=has_done,
             language_used=language,
-            is_private=is_private
             )
         return {"output": code_output["output"],
                 "errors": code_output["errors"]
