@@ -26,17 +26,17 @@ class PythonDriverCode(DriverCode):
         method=test_casess["method_name"]
         if is_private:
             verify_code='''
-    if(out!=exp):
-        print("error at test case",i+1)
-        return
+        if(out!=exp):
+            print("error at test case",i+1)
+            return
     print("Accepted")
 '''     
         else:
             verify_code='''
-    print(f"Test case {i+1}: Output: {out}, Expected: {exp}") 
-    if(out!=exp): 
-        print("error at test case",i+1)
-        return
+        print(f"Test case {i+1}: Output: {out}, Expected: {exp}") 
+        if(out!=exp): 
+            print("error at test case",i+1)
+            return
 '''
         driver_code=f'''
 def parse(x):
