@@ -72,15 +72,20 @@ class CppDriverCode(DriverCode):
             verify_code = '''
         if (output != expected) {
             cout << "Error at test case " << i + 1 << endl;
-            return;
+            return ;
         }
 '''
         else:
             verify_code = '''
-        cout << "Test case " << i + 1 << ": Output: " << output << ", Expected: " << expected << endl;
+        
+        cout<<"Test case:"<<i+1<<":output:";
+        printvalue(output);
+        cout<<",expected:"<<;
+        printvalue(expected);
+        cout<<endl;
         if (output != expected) {
             cout << "Error at test case " << i + 1 << endl;
-            return;
+            return ;
         }
 '''
 
@@ -96,8 +101,23 @@ class CppDriverCode(DriverCode):
         driver_code = f'''
 
 #include "/app/backend/jsonhpp/json.hpp"
+#include <iostream>
+#include <vector>
 using json = nlohmann::json;
 using namespace std;
+template<typename T>
+void printvalue(const T& value){
+    cout<<value;
+}
+template<typename T>
+void printvalue(const vector<T>& v){
+    cout<<"[";
+    for(const auto& x:v){
+        cout<< x << " ";
+    }
+    cout<<"]";
+}
+
 
 void driver_code() {{
     Solution a;
