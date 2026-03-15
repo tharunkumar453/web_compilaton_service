@@ -210,7 +210,8 @@ int main() {
     int *expected = expected_{i};
     int expected_size = {len(output)};
 '''
-
+        if c_retrun == "char*":
+            return f'    char* expected ="{output}";\n'
         return f"    {c_return} expected = {output};\n"
 
     def get_c_return_type(self, return_type):
