@@ -210,7 +210,7 @@ int main() {
     int *expected = expected_{i};
     int expected_size = {len(output)};
 '''
-        if c_retrun == "char*":
+        if c_return == "char*":
             return f'    char* expected ="{output}";\n'
         return f"    {c_return} expected = {output};\n"
 
