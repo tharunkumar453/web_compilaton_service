@@ -68,7 +68,7 @@ class CppDriverCode(DriverCode):
             cout << "Error at test case " << i + 1 << endl;
             return;
             }
-        }
+        
         cout << "Accepted" << endl;
 '''
         else:
@@ -78,7 +78,7 @@ class CppDriverCode(DriverCode):
             cout << "Error at test case " << i + 1 << endl;
             return;
             }
-        }
+        
 '''
 
         for i, type in enumerate(test_casess["signature"]):
