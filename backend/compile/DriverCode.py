@@ -14,16 +14,30 @@ class TotalCodeCombiner:
 
 class DriverCode(ABC): 
     @abstractmethod
-    def DriverCodeGenerator(self,file,test_casess) -> str:
+    def DriverCodeGenerator(self,file,test_casess,is_private) -> str:
         pass
 
 
  # Driver code for python   
 class PythonDriverCode(DriverCode):
-    def DriverCodeGenerator(self,file,test_casess):
-        inputs=[tc["input"] for tc in test_casess['cases']]
-        ans=[tc["output"] for tc in test_casess['cases']]
+    def DriverCodeGenerator(self,file,test_casess,is_private):
+        inputs=[tc["input"] for tc in test_casess[ "private_cases" if is_private else "public_cases"]]
+        ans=[tc["output"] for tc in test_casess[ "private_cases" if is_private else "public_cases"]]
         method=test_casess["method_name"]
+        if is_private:
+            verify_code='''
+if(out!=exp):
+    print("error at test case",i+1)
+    return
+print("Accepted")
+'''     
+        else:
+            verify_code='''
+print(f"Test case {i+1}: Output: {out}, Expected: {exp}")
+if(out!=exp):
+    print("error at test case",i+1)
+    return
+'''
         driver_code=f'''
 def parse(x):
     if isinstance(x,list):
@@ -38,11 +52,7 @@ def driver_code():
         args=parse(x)
         out=func(*args)
         exp=parse(y)
-        print("Output:",out,"Expected:",exp)
-        if(out!=exp):
-            print("error at test case",i+1)
-            return
-    print("Accepted")
+        {verify_code}
 driver_code()
 '''   
         return TotalCodeCombiner.combineUsercodewithDriverCode(file,driver_code)
@@ -51,7 +61,7 @@ driver_code()
 class CppDriverCode(DriverCode):
 
 
-    def DriverCodeGenerator(self,file,test_casess):
+    def DriverCodeGenerator(self,file,test_casess,is_private):
         dump_json=json.dumps(test_casess,indent=2)
         argument_declarations = []
         argument_names = []
@@ -96,7 +106,7 @@ int main() {{
 # Driver code for C
 class CDriverCode(DriverCode):
 
-    def DriverCodeGenerator(self, file, test_casess):
+    def DriverCodeGenerator(self, file, test_casess,is_private):
 
         inputs = [tc["input"] for tc in test_casess['cases']]
         ans = [tc["output"] for tc in test_casess['cases']]
@@ -164,15 +174,7 @@ int main() {
  
     if(memcmp(output, expected, sizeof(int)*expected_size)!=0){{
         printf("Error at test case {i+1}\\n");
-        printf("Output: ");
-        for(int k=0;k<expected_size;k++){{
-            printf("%d ", output[k]);
-        }}
-        printf("\\nExpected: ");
-        for(int k=0;k<expected_size;k++){{
-            printf("%d ", expected[k]);
-        }}
-        printf("\\n");
+        pri
         return 1;
     }}
 }}

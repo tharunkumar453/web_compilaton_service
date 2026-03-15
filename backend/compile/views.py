@@ -23,7 +23,7 @@ class submit(APIView):
         user_codefile=request.FILES["file"]
         problem_id=request.data.get("problem_id")
         language=request.data.get("language")
-        
+        is_private=request.data.get("is_private", False)
         has_problem_in_cache = cache.get(f"problem_id:{problem_id}")
 
         if has_problem_in_cache:test_case_file=has_problem_in_cache
@@ -32,10 +32,11 @@ class submit(APIView):
             cache.set(f"problem_id:{problem_id}", test_case_file, timeout=30*30)  
         
             
-      
-        has_previously_correct=UserBoard.objects.filter(email=user_email,problem=test_case_file,has_done=True)
-        if has_previously_correct.exists():
-            return Response("you alredy submitt this oone correctluy this submission not ")
+        if is_private:
+            has_previously_correct=UserBoard.objects.filter(email=user_email,problem=test_case_file,has_done=True)
+            if has_previously_correct.exists():
+                return Response("you alredy submitt this oone correctluy this submission not ")
+
 
         user_codefile=submission.objects.create(
             email=user_email,
@@ -50,7 +51,8 @@ class submit(APIView):
                           test_case_file.problem_id,
                           language,
                           user_codefile.submission_id,
-                          name)
+                          name,
+                          is_private)
 
 
 
@@ -116,3 +118,4 @@ class check_status(APIView):
                 {"detail": "Result backend unavailable.", "error": str(exc)},
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
             )
+

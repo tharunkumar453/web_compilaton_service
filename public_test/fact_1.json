@@ -3,7 +3,12 @@
 	"problem_id": "1",
 	"signature": ["int"],
 	"return_type": "long long",
-	"cases": [
+	"public_cases": [
+	  	{ "input": [2], "output": 2 },
+        { "input": [4], "output": 24 },
+		{ "input": [-10], "output": -1 }
+	],
+	"private_cases": [
 		{ "input": [-10], "output": -1 },
 		{ "input": [6], "output": 720 },
 		{ "input": [7], "output": 5040 },
