@@ -112,7 +112,7 @@ class check_status(APIView):
             })
         except Exception as exc:
             return Response(
-                {"detail": "please check the code compile and submit again",str(exc)},
+               {"detail": "please check the code. compile and submit again", "error": str(exc)},
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
             )
 
