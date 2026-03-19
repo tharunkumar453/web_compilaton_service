@@ -28,7 +28,7 @@ class ExecutionHandler:
             has_done=has_done,
             language_used=language,
             )
-        return {"output": has_done,
+        return {"output": code_output["output"],
                 "errors": code_output["errors"]
                 }
 
