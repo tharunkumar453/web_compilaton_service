@@ -47,10 +47,4 @@ This will start all the services, and the web application will be accessible at 
 
 ## Screenshots
 
-You can add screenshots of your application to showcase its features. Create a directory (e.g., `images`) in your repository to store the image files.
-
-Then, embed the image in your `README.md` using Markdown syntax:
-
-```markdown
-![Alt text for the image](images/screenshot.png)
-```
+![Screenshot](images/screenshot.png)
