@@ -95,12 +95,9 @@ class TotalSubmissions(APIView):
 class LeaderBoard(APIView):
     permission_classes = [IsAdminUser]
     def get(self,request):
-        leaderboard = cache.get("leaderboard_data")
-        if not leaderboard:
             leaderboard = list(UserBoard.objects.filter(has_done=True).values('email').annotate(solved=Count('problem', distinct=True),last_sumbission=Max(('time_of_submission'))).order_by('-solved','last_sumbission'))
-            cache.set("leaderboard_data", leaderboard, timeout=30*6)  # Cache for 30 minutes
-        
-        return Response(leaderboard, status=status.HTTP_200_OK)
+    
+            return Response(leaderboard, status=status.HTTP_200_OK)
 
 
 class check_status(APIView):
@@ -114,7 +111,7 @@ class check_status(APIView):
             })
         except Exception as exc:
             return Response(
-                {"detail": "Result backend unavailable.", "error": str(exc)},
+               {"detail": "please check the code. compile and submit again", "error": str(exc)},
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
             )
 

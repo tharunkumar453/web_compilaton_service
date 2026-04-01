@@ -5,14 +5,17 @@ import json
 class TotalCodeCombiner:
     @staticmethod
     def combineUsercodewithDriverCode(user_code,Driver_code):
-        x=f'''
+        return f'''
 {user_code}  
 {Driver_code}
 '''     
+<<<<<<< HEAD
         print(x) # for debugging
         return x
     
 
+=======
+>>>>>>> b2c1551f0d3fba1950cb9368fbbac121d018a2d4
 class DriverCode(ABC): 
     @abstractmethod
     def DriverCodeGenerator(self,file,test_casess,is_private) -> str:
@@ -76,15 +79,20 @@ class CppDriverCode(DriverCode):
             verify_code = '''
         if (output != expected) {
             cout << "Error at test case " << i + 1 << endl;
-            return;
+            return ;
         }
 '''
         else:
             verify_code = '''
-        cout << "Test case " << i + 1 << ": Output: " << output << ", Expected: " << expected << endl;
+        
+        cout<<"Test case:"<<i+1<<":output:";
+        printvalue(output);
+        cout<<",expected:";
+        printvalue(expected);
+        cout<<endl;
         if (output != expected) {
             cout << "Error at test case " << i + 1 << endl;
-            return;
+            return ;
         }
 '''
 
@@ -97,12 +105,27 @@ class CppDriverCode(DriverCode):
         argument_declarations_code = "\n        ".join(argument_declarations)
         arg_call = ", ".join(argument_names)
 
-        driver_code = f'''
+        driver_code = '''
 
 #include "/app/backend/jsonhpp/json.hpp"
+#include <iostream>
+#include <vector>
 using json = nlohmann::json;
 using namespace std;
-
+template<typename T>
+void printvalue(const T& value){
+    cout<<value;
+}
+template<typename T>
+void printvalue(const vector<T>& v){
+    cout<<"[";
+    for(const auto& x:v){
+        cout<< x << " ";
+    }
+    cout<<"]";
+}
+'''
+        driver_code+=f'''
 void driver_code() {{
     Solution a;
     json data = R"({dump_json})"_json;
@@ -134,3 +157,197 @@ int main() {
 '''
 
         return TotalCodeCombiner.combineUsercodewithDriverCode(file, driver_code)
+<<<<<<< HEAD
+=======
+
+
+
+class CDriverCode(DriverCode):
+
+    def DriverCodeGenerator(self, file, test_casess, is_private):
+
+        cases = test_casess["private_cases"] if is_private else test_casess["public_cases"]
+        method = test_casess["method_name"]
+        return_type = test_casess["return_type"]
+
+        c_return = self.get_c_return_type(return_type)
+
+        verifier = VerifyCodeFactory.get_verify_code(return_type)
+
+        driver_code = '''
+int main() {
+'''
+
+        for i, case in enumerate(cases):
+
+            input_code, args = self.generate_input_code(case["input"], i)
+
+            expected_code = self.generate_expected_code(case["output"], i, c_return)
+
+            verify_code = verifier.verify_code_generator(is_private).replace("i + 1", str(i + 1))
+
+            driver_code += f'''
+{{
+{input_code}
+    {c_return} output = {method}({args});
+{expected_code}
+{verify_code}
+}}
+'''
+
+        driver_code += '''
+    printf("Accepted\\n");
+    return 0;
+}
+'''
+
+        return TotalCodeCombiner.combineUsercodewithDriverCode(file, driver_code)
+
+    def generate_input_code(self, inputs, i):
+
+        setup_code = ""
+        args = []
+
+        for j, arg in enumerate(inputs):
+
+            if isinstance(arg, list):
+
+                arr_name = f"arr_{i}_{j}"
+                vals = ", ".join(map(str, arg))
+
+                setup_code += f"    int {arr_name}[] = {{{vals}}};\n"
+                args.append(arr_name)
+
+            elif isinstance(arg, str):
+
+                args.append(f'"{arg}"')
+
+            else:
+
+                args.append(str(arg))
+
+        return setup_code, ", ".join(args)
+
+    def generate_expected_code(self, output, i, c_return):
+
+        if isinstance(output, list):
+
+            vals = ", ".join(map(str, output))
+
+            return f'''
+    int expected_{i}[] = {{{vals}}};
+    int *expected = expected_{i};
+    int expected_size = {len(output)};
+'''
+        if c_return == "char*":
+            return f'    char* expected ="{output}";\n'
+        return f"    {c_return} expected = {output};\n"
+
+    def get_c_return_type(self, return_type):
+
+        if return_type == "string":
+            return "char*"
+
+        if return_type == "vector<int>":
+            return "int*"
+
+        return return_type
+
+
+class verify_code(ABC):
+
+    @abstractmethod
+    def verify_code_generator(self, is_private) -> str:
+        pass
+
+
+class string_verify(verify_code):
+
+    def verify_code_generator(self, is_private):
+
+        if is_private:
+
+            return '''
+    if (strcmp(output, expected) != 0) {
+        printf("Error at test case %d\\n", i + 1);
+        return 0;
+    }
+'''
+
+        return '''
+    printf("Test case %d: Output: %s, Expected: %s\\n", i + 1, output, expected);
+    if (strcmp(output, expected) != 0) {
+        printf("Error at test case %d\\n", i + 1);
+        return 0;
+    }
+'''
+
+
+class vector_int_verify(verify_code):
+
+    def verify_code_generator(self, is_private):
+
+        if is_private:
+
+            return '''
+    if (memcmp(output, expected, expected_size * sizeof(int)) != 0) {
+        printf("Error at test case %d\\n", i + 1);
+        return 0;
+    }
+'''
+
+        return '''
+    printf("Test case %d: Output: ", i + 1);
+    for (int j = 0; j < expected_size; j++) {
+        printf("%d ", output[j]);
+    }
+
+    printf(", Expected: ");
+    for (int j = 0; j < expected_size; j++) {
+        printf("%d ", expected[j]);
+    }
+
+    printf("\\n");
+
+    if (memcmp(output, expected, expected_size * sizeof(int)) != 0) {
+        printf("Error at test case %d\\n", i + 1);
+        return 0;
+    }
+'''
+
+
+class default_verify(verify_code):
+
+    def verify_code_generator(self, is_private):
+
+        if is_private:
+
+            return '''
+    if (output != expected) {
+        printf("Error at test case %d\\n", i + 1);
+        return 0;
+    }
+'''
+
+        return '''
+    printf("Test case %d: Output: %d, Expected: %d\\n", i + 1, output, expected);
+    if (output != expected) {
+        printf("Error at test case %d\\n", i + 1);
+        return 0;
+    }
+'''
+
+
+class VerifyCodeFactory:
+
+    @staticmethod
+    def get_verify_code(return_type):
+
+        if return_type == "string":
+            return string_verify()
+
+        if return_type == "vector<int>":
+            return vector_int_verify()
+
+        return default_verify()
+>>>>>>> b2c1551f0d3fba1950cb9368fbbac121d018a2d4
