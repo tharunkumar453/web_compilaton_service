@@ -27,9 +27,8 @@ SECRET_KEY = "django-insecure-sc9ro!y6b0=3+2kys&v^ar++!79p0ov(r$_@#!l_q#^c1^bwms
 DEBUG = True
 
 ALLOWED_HOSTS = ["localhost",
-    "django",
-    "web",
-    "20.212.14.87"]
+                "web",
+                "20.212.14.87"]
 CORS_ORIGIN_ALLOW_ALL = True
 
 CSRF_TRUSTED_ORIGINS = [
@@ -151,10 +150,8 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
-        "rest_framework.permissions.IsAuthenticated",
+        "rest_framework.permissions.IsAuthenticated",   
 
-      
-        
     ],
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',

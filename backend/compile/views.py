@@ -2,7 +2,6 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-
 import uuid
 from .models import problem_table,UserBoard,submission
 from .serializers import UserDashboardSerializer    
@@ -11,7 +10,7 @@ from django.core.cache import cache
 from celery.result import AsyncResult
 from .Task import execute_code_task
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
-from rest_framework.parsers import JSONParser,FormParser,MultiPartParser       
+from rest_framework.parsers import FormParser,MultiPartParser       
 
 class submit(APIView):
     permission_classes = [IsAuthenticated]

@@ -5,25 +5,15 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
-    gcc \
     g++ \
     && rm -rf /var/lib/apt/lists/*
 
-
-
-
- 
 COPY  . ./
 # Sync dependencies with uv (this creates .venv in /app)
 RUN uv sync --frozen 
-
-
-
 # Copy backend code (will be overridden by volume in dev)
-
-
 ENV DEBUG=1
-
+# for developmet DEBUG=1, for production DEBUG=0
 EXPOSE 8000
 
 

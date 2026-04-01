@@ -1,5 +1,5 @@
-from .DriverCode import CDriverCode, PythonDriverCode, CppDriverCode
-from .ExecuteCode import ExecuteInPython, ExecuteInCpp, ExecuteInC
+from .DriverCode import PythonDriverCode, CppDriverCode
+from .ExecuteCode import ExecuteInPython, ExecuteInCpp
 
 
 class DriverCodeMiddleware:
@@ -9,8 +9,6 @@ class DriverCodeMiddleware:
             return PythonDriverCode()
         elif language.lower() == "cpp":
             return CppDriverCode()
-        elif language.lower() == "c":
-            return CDriverCode()
         else:
             raise ValueError(f"Unsupported language: {language}")  
         
@@ -22,8 +20,6 @@ class ExecuteCodeFactory:
             return ExecuteInPython()
         elif language.lower()=="cpp":
             return ExecuteInCpp()
-        elif language.lower()=="c":
-            return ExecuteInC()
         else:
             raise ValueError(f"Unsupported language: {language}")
 
