@@ -18,8 +18,7 @@ This project is a web-based service for compiling and executing code. It's desig
 *   **Web Server:** Nginx
 *   **Containerization:** Docker, Docker Compose
 
-## Architecture d<img width="1117" height="565" alt="Untitled-2026-04-01-2225" src="https://github.com/user-attachments/assets/0c797861-93e0-4e97-8f81-b499c923a572" />
-iagram
+## Architecture diagram<img width="1117" height="565" alt="Untitled-2026-04-01-2225" src="https://github.com/user-attachments/assets/0c797861-93e0-4e97-8f81-b499c923a572" />
 
 
 ## Project Structure
