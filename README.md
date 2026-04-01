@@ -34,7 +34,7 @@ To get the project up and running, you'll need to have Docker and Docker Compose
 1.  **Clone the repository:**
 
     ```bash
-    git clone https://github.com/your-username/web_compilaton_service.git
+    git clone https://github.com/tharunkumar453/web_compilaton_service.git
     ```
 
 2.  **Build and run the containers:**
@@ -45,10 +45,10 @@ To get the project up and running, you'll need to have Docker and Docker Compose
 
 This will start all the services, and the web application will be accessible at `http://localhost:8000`.
 # Screenshorts
-## Admim Dashboard
+## Admin Dashboard
 ![admin](https://github.com/user-attachments/assets/d1cddd93-47f9-4933-80fe-35e372d50f01)
 
-## USer Registration via Postman API
+## User Registration via Postman API
 ![add_user](https://github.com/user-attachments/assets/81c88bde-1c79-4c1c-9a7d-c85dadd1a473)
 
 ## User login via Postman API
@@ -57,8 +57,8 @@ This will start all the services, and the web application will be accessible at 
 ![submit](https://github.com/user-attachments/assets/981cbc4a-4dd1-4acc-bfb7-a102bb936d2f)
 ## Leader Board
 ![leader](https://github.com/user-attachments/assets/6329cd98-87bb-4f6f-a07b-8f076bd69dde)
-# AZure VM
+# Azure VM
 ![vm](https://github.com/user-attachments/assets/e0de8368-b3ae-4c14-a8fe-bb8a60ff678c)
-## containers in VM
+## Containers in VM
 ![containers](https://github.com/user-attachments/assets/c4ee170c-e7ee-407e-93aa-6d3d1ef13f5c)
 
